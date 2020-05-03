@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>GitHub Profile</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
+  
+  <style>
+    /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+
+    .row.content {
+      height: 1500px
+    }
+
+    /* Set gray background color and 100% height */
+
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+
+    /* On small screens, set height to 'auto' for sidenav and grid */
+
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {
+        height: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container-fluid">
+    <div class="row content">
+      <div class="col-sm-3 sidenav">
+        <h4>GitHub Details</h4>
+        <br>
+        <ul class="nav nav-pills nav-stacked">
+          <li class="active">
+            <a href="https://github.com/logout">logout</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-sm-8">
+        <h4>Search Git User:</h4>
+        <div class="input-group">
+          <input type="text" class="form-control" id='searchuser' placeholder="Search github users..">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">
+              <span class="glyphicon glyphicon-search"></span>
+            </button>
+          </span>
+        </div>
+        <br>
+        <br>
+        <table id="gitprofiles" class="table table-striped table-bordered" style="width:100%">
+          <thead>
+            <tr>
+              <th>name</th>
+              <th>type</th>
+              <th>profile</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function () {
+      var t = $('#gitprofiles').DataTable({
+        "columns": [
+            { "data": "login" },
+            { "data": "type" },
+            { "data": "html_url",render: function(data, type, full, meta) {
+             return '<a href="'+data+'" target=_blank>User Profile</a>'
+  } }
+        ]
+      });
+      $("button").click(function () {
+        //clear datatable
+       t.clear().draw();
+        $.ajax({
+          data: { "gitsearch": $('#searchuser').val() },
+          url: "gitsearch", success: function (result) {
+            let rowObj={};
+            let rowtotal={};
+            debugger;
+            let data=result.data.items;
+            data.forEach(element => {
+              t.row.add(element).draw(false);
+            });
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
